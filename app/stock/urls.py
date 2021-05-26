@@ -5,7 +5,6 @@ from stock import views
 app_name = 'stock'
 
 urlpatterns = [
-    path("", views.login_view, name='login'),
-    path("login", views.login_post, name='login_post'), 
-    path("logged", views.logged, name='logged'),
+    path("", views.LoginView.as_view(), name='login'),
+    path("logged", views.ChatView.as_view(), name='logged'),
     ]
