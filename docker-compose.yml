@@ -1,6 +1,6 @@
 # TODO:  create the cervice for the beat only
 
-version: "3.2"
+version: "3.4"
 services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -15,7 +15,8 @@ services:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
-        - rabbitmq_go_net
+        - rabbitmq
+        - main
 
   postgres:
     container_name: postgres
@@ -33,10 +34,53 @@ services:
     volumes:
         - postgresql-data:/var/lib/postgresql/data
 
+  app:
+    build: .
+    container_name: app
+    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn app.wsgi -b 0.0.0.0:8000"
+    depends_on:
+        - postgres
+        - rabbitmq
+    ports:
+        - "8000:8000"
+    expose:
+        - "8000"
+    hostname: app
+    image: app-image
+    networks:
+        - main
+    restart: on-failure
+
+  celery_worker:
+    command: sh -c "celery -A app worker -l info"
+    container_name: celery_worker
+    depends_on:
+        - app
+        - postgres
+        - rabbitmq
+    hostname: celery_worker
+    image: app-image
+    networks:
+        - main
+    restart: on-failure
+
+  celery_beat:
+    command: sh -c "celery -A app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    container_name: celery_beat
+    depends_on:
+        - app
+        - postgres
+        - rabbitmq
+    hostname: celery_beat
+    image: app-image
+    networks:
+        - main
+    restart: on-failure
+
 networks:
   main:
 
-  rabbitmq_go_net:
+  rabbitmq:
     driver: bridge
 
 volumes:

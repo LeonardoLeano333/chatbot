@@ -20,4 +20,9 @@ put your user credentials
 
 if it is authenticated it will enter in the page to make the the things to chat with the chat bot
 
+run the comands for running the constainers:
 
+docker-compose up postgres
+docker-compose up rabbitmq
+docker-compose up app
+docker-compose up 
