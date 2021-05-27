@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from stock.forms import LoginForm
+from stock.models import ChatRoomMessages
 
 # TODO: create the chat room
 # - create a view that shows the 50 messages from the model model timestamp, username and messages 
@@ -18,10 +19,10 @@ from stock.forms import LoginForm
 
 # implement this others latter
 # TODO: START implement this later
-def logged(request):
-    return render(request, "stock/authenticated.html", context={})
-def logout_view(request):
-    logout(request)
+# def logged(request):
+#     return render(request, "stock/authenticated.html", context={})
+# def logout_view(request):
+#     logout(request)
     # Redirect to a success page.
 # TODO: END implement this latter
 
@@ -48,4 +49,23 @@ class ChatView(LoginRequiredMixin, View):
     redirect_field_name = 'redirect_to'
     
     def get(self, request):
-        return render(request, "stock/authenticated.html", context={})
+        msg_objs = ChatRoomMessages.objects.filter().order_by("-sended_datetime")[:50:-1]
+
+        quotes = []
+        for msg_obj in msg_objs:
+            quotes.append(
+                {
+                    "datetime":str(msg_obj.sended_datetime),
+                    "name": msg_obj.user_name,
+                    "message": msg_obj.message
+                }
+            )
+
+        html_data = {"quotes": quotes}
+        return render(request, "stock/chat_page.html", context=html_data)
+
+class ChatDataView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        msg_obj = ChatRoomMessages.objects.filter().order_by("sended_datetime")[:50]
+        chat_room_messages = ChatRoomMessages()
