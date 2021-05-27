@@ -5,7 +5,7 @@ import logging
 log = logging.getLogger("celery")
 
 @celery_app.task
-def five_min_bot():
+def minute_bot():
     print("five min bot do something")
     try:
         log.info("five min bot do something")

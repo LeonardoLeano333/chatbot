@@ -143,8 +143,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CELERY_BROKER_URL= 'amqp://rabbitmq:rabbitmq@localhost:5672'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BEAT_SCHEDULE = {
-    'queue_every_five_mins': {
-        'task': 'stock.tasks.five_min_bot',
-        'schedule': crontab(minute=1),
+    'queue_every_mins': {
+        'task': 'stock.tasks.minute_bot',
+        'schedule': crontab(),
     },
 }

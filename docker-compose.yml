@@ -1,3 +1,5 @@
+# TODO:  create the cervice for the beat only
+
 version: "3.2"
 services:
   rabbitmq:
