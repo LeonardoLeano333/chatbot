@@ -22,7 +22,10 @@ if it is authenticated it will enter in the page to make the the things to chat 
 
 run the comands for running the constainers:
 
-docker-compose up postgres
-docker-compose up rabbitmq
-docker-compose up app
 docker-compose up 
+
+obs.: it will show some erros because rabbit is not operational after operational it runs okay
+
+# registering a users
+docker exec -i -t app sh
+python manage.py createsuperuser
