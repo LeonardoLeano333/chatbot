@@ -61,6 +61,7 @@ services:
         - rabbitmq
     hostname: celery_worker
     image: app-image
+
     networks:
         - main
     restart: on-failure
