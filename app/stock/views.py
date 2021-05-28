@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from stock.forms import LoginForm
+from stock.forms import LoginForm, MessageForm
 from stock.models import ChatRoomMessages
 
 # TODO: create the chat room
@@ -55,14 +55,40 @@ class ChatView(LoginRequiredMixin, View):
         for msg_obj in msg_objs:
             quotes.append(
                 {
-                    "datetime":str(msg_obj.sended_datetime),
+                    "datetime":str(msg_obj.sended_datetime),# this date should be prettier in a pattern
                     "name": msg_obj.user_name,
                     "message": msg_obj.message
                 }
             )
 
-        html_data = {"quotes": quotes}
+        message_form = MessageForm()
+
+        html_data = {
+            "quotes": quotes,
+            "message_form": message_form
+            }
         return render(request, "stock/chat_page.html", context=html_data)
+
+    def post(self, request):
+        message_form = MessageForm(request.POST)
+        if not message_form.is_valid():
+            return redirect("stock:login")
+
+        if not request.user:
+            return redirect("stock:login")
+
+        message = message_form.cleaned_data["message"]
+
+        # create a new quote message
+        user_name = request.user.username
+        quote = ChatRoomMessages(
+            user_name = user_name,
+            message = message
+            )
+        quote.save()
+
+        return redirect("stock:logged")
+
 
 class ChatDataView(LoginRequiredMixin, View):
 
