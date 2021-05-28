@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-f8$$2=(ea!nt*u1)*fw)7vs65b^ndklq+jam()uk27#-eaw947
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["app",'localhost','localhost:8000']
 
 
 # Application definition
@@ -139,6 +139,8 @@ STATIC_ROOT = '/static'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+STOCK_ROBOT_URL = 'http://localhost:8000'
+APPLICATION_TOKEN = 'c78c14a2-1413-4925-a8e1-575ab587e2af'
 
 # Celery config
 CELERY_BROKER_URL= 'amqp://rabbitmq:rabbitmq@rabbitmq:5672'

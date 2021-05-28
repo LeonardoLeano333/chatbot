@@ -37,7 +37,7 @@ services:
   app:
     build: .
     container_name: app
-    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn app.wsgi -b 0.0.0.0:8000"
+    command: sh -c "gunicorn app.wsgi -b 0.0.0.0:8000" #python manage.py collectstatic --no-input && python manage.py migrate && 
     depends_on:
         - postgres
         - rabbitmq
@@ -50,6 +50,7 @@ services:
     networks:
         - main
     restart: on-failure
+
 
   celery_worker:
     command: sh -c "celery -A app worker -l info"

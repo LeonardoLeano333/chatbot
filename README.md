@@ -29,3 +29,7 @@ obs.: it will show some erros because rabbit is not operational after operationa
 # registering a users
 docker exec -i -t app sh
 python manage.py createsuperuser
+
+
+# runing test:
+python manage.py test

@@ -1,8 +1,15 @@
+import json
+from django.conf import settings
+
+from django.http.response import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
 from stock.forms import LoginForm, MessageForm
 from stock.models import ChatRoomMessages
 
@@ -95,3 +102,36 @@ class ChatDataView(LoginRequiredMixin, View):
     def get(self, request):
         msg_obj = ChatRoomMessages.objects.filter().order_by("sended_datetime")[:50]
         chat_room_messages = ChatRoomMessages()
+
+@csrf_exempt
+def stock_bot_view(request):
+    valid_token = 'c78c14a2-1413-4925-a8e1-575ab587e2af' # generated uuid
+
+    if not request.method == "POST":
+        return JsonResponse({"error":"METHOD NOT ALLOWED"}, status=405)
+
+    try:
+        request_json = json.loads(request.body)
+    except Exception:
+        return JsonResponse({"error":"Invalid data"}, status=400)
+
+    if not request_json.get("token"):
+        return JsonResponse({"error":"unaltorized"}, status=401)
+
+    if not request_json.get("token") == settings.APPLICATION_TOKEN:
+        return JsonResponse({"error":"unaltorized"}, status=401)
+
+    stock = request_json.get("stock")
+    if not stock:
+        return JsonResponse({"error":"Invalid data"}, status=400)
+
+    message = f"APPL.US quote is ${stock} per share"
+
+    quote = ChatRoomMessages(
+        user_name = "bot",
+        message = message
+        )
+
+    quote.save()
+
+    return JsonResponse({"okay":"okay"}, status=200)
