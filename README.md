@@ -1,35 +1,29 @@
-create environment variables
+# Chat Bot
 
-in app directory run:
+## Running project
 
-python manage.py migrate 
+run the project:
 
-obs: this creates the database and make the migrations for the admin table
+`docker-compose build `
 
-create superuser, and put the credentials for the user:
+Obs.: some errors may occor because rabbitmq delays to be operational
 
-python manage.py createsuperuser
+after build run the services:
 
-runing server:
-python manage.py runserver
+`docker-compose up `
 
-testing UI:
-localhost:8000/
+setting up a user 
 
-put your user credentials
+`docker exec -i -t app sh`
 
-if it is authenticated it will enter in the page to make the the things to chat with the chat bot
+in the container
 
-run the comands for running the constainers:
+`python manage.py createsuperuser`
 
-docker-compose up 
+and create a new user passing user name, email, and password
 
-obs.: it will show some erros because rabbit is not operational after operational it runs okay
+## test the UI
 
-# registering a users
-docker exec -i -t app sh
-python manage.py createsuperuser
+Open the browser in the url: localhost:8000/
 
-
-# runing test:
-python manage.py test
+put your user and chet it alt the chat and the bot messages
