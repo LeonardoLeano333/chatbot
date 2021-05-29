@@ -37,7 +37,7 @@ services:
   app:
     build: .
     container_name: app
-    command: sh -c "gunicorn app.wsgi -b 0.0.0.0:8000" #python manage.py collectstatic --no-input && python manage.py migrate && 
+    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate &&  gunicorn app.wsgi -b 0.0.0.0:8000" #
     depends_on:
         - postgres
         - rabbitmq
